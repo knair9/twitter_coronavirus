@@ -13,6 +13,12 @@ import os
 import json
 from collections import Counter,defaultdict
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+# Use a font that supports Unicode characters including Korean
+plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial Unicode MS', 'Noto Sans CJK']
+plt.rcParams['axes.unicode_minus'] = False
 
 # open the input path
 with open(args.input_path) as f:
@@ -37,14 +43,20 @@ plt.figure(figsize=(10, 6))
 plt.bar(keys, values)
 plt.xlabel('Country/Language Code')
 plt.ylabel('Tweet Count')
-plt.title(f'Top 10 Tweets for {args.key}')
+file_type = 'Languages' if 'lang' in args.input_path else 'Countries'
+plt.title(f'Top 10 {file_type}  by Tweet Count with Hashtag: {args.key}')
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 
 # generate output filename
 # Extract the base filename and hashtag to create a descriptive name
 input_base = os.path.basename(args.input_path).replace('.', '_')
-key_safe = args.key.replace('#', '').replace('/', '_')
+if '코로나바이러스' in args.key:
+    key_safe = 'korean'
+elif 'coronavirus' in args.key:
+    key_safe = 'coronavirus'
+else:
+    key_safe = args.key.replace('#', '').replace('/', '_')
 output_filename = f'{input_base}_{key_safe}.png'
 
 # save the plot
